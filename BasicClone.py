@@ -92,9 +92,11 @@ class Lexer:
         tokens.append(Token(ST_RPAREN))
         self.advance()
       else:
-        # return errors
+        char = self.current_char
+        self.advance()
+        return [], IllegalCharError("'" + char + "'")
     
-    return tokens
+    return tokens, None
   
   def make_number(self):
     num_str = ''
@@ -114,3 +116,13 @@ class Lexer:
       return Token(ST_FLOAT, float(num_str))     
       
 
+####################
+# RUN FUNCTION
+####################
+
+
+def run(text):
+  lexer = Lexer(text)
+  tokens, error = lexer.make_tokens()
+
+  return tokens, error
