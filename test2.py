@@ -1,15 +1,4 @@
-####################
-# CONSTANTS
-####################
-
-
 DIGITS = '0123456789'
-
-
-####################
-# ERRORS
-####################
-
 
 class Error:
     def __init__(self, error_name, details):
@@ -23,12 +12,6 @@ class Error:
 class IllegalCharError(Error):
     def __init__(self, details):
         super().__init__('Unknown/Illegal Character Used', details)
-
-
-####################
-# TOKENS
-####################
-
 
 ST_INT = 'INT'
 ST_FLOAT = 'FLOAT'
@@ -47,12 +30,6 @@ class Token:
     def __repr__(self):
         if self.value: return f'{self.type}:{self.value}'
         return f'{self.type}'
-
-
-####################
-# LEXER
-####################
-
 
 class Lexer:
     def __init__(self, text):
@@ -115,12 +92,6 @@ class Lexer:
             return Token(ST_INT, int(num_str))
         else:
             return Token(ST_FLOAT, float(num_str))
-      
-
-####################
-# RUN FUNCTION
-####################
-
 
 def run(text):
     lexer = Lexer(text)
