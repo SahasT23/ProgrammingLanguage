@@ -160,12 +160,63 @@ class BinOpNode:
 
     def __repr__(self):
         return f'({self.left_node}, {self.op_tok}, {self.right_node})'
+    
+####################
+# PARSER
+####################
+
+class Parser:
+    def __init__(self, tokens):
+        self.tokens = tokens
+        self.tok_idx = -1
+        self.advance()
+
+    def advance(self, ):
+        self.tok_idx += 1
+        if self.tok_idx < len(self.tokens):
+            self.current_tok = self.tokens[self.tok_idx]
+        return self.current_tok
+    
+    def parse(self):
+        res = self.expr()
+        return res
+    
+    def factor(self):
+        tok = self.current_tok
+
+        if tok.type in (ST_INT, ST_FLOAT):
+            self.advance()
+            return NumberNode(tok)
+
+    def term(self):
+        return self.bin_op(self.factor, (ST_MUL, ST_DIV))
+
+    def expr(self):
+        return self.bin_op(self.term, (ST_PLUS, ST_MINUS))
+
+    def bin_op(self, func, ops):
+        left = func()
+
+        while self.current_tok.type in ops:
+            op_tok = self.current_tok
+            self.advance()
+            right = func()
+            left = BinOpNode(left, op_tok, right)
+
+        return left
 
 ####################
 # RUN FUNCTION
 ####################
 
 def run(fn, text):
+    # Token Generation
     lexer = Lexer(fn, text)
     tokens, error = lexer.make_tokens()
-    return tokens, error
+    if error: return None, error
+
+    # Generate AST
+    parser = Parser(tokens)
+    ast = parser.parse()
+
+    return ast, None
